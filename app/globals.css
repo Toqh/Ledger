@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+input:focus { outline: none; }
+select:focus { outline: none; }
+
+@keyframes rise    { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
+@keyframes pop     { from { opacity:0; transform:translateX(-50%) translateY(8px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+@keyframes menuIn  { from { opacity:0; transform:scale(0.95) translateY(-6px); } to { opacity:1; transform:scale(1) translateY(0); } }
+@keyframes fabPop  { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+@keyframes sheetUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+@keyframes glassIn { from { opacity:0; transform:translateX(-50%) scale(0.92); } to { opacity:1; transform:translateX(-50%) scale(1); } }
+
+@media print {
+  .no-print { display:none !important; }
+  body { background: white !important; }
+}
