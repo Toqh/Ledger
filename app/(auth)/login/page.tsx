@@ -21,13 +21,20 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
-    if (err) {
-      setError(err.message);
+    try {
+      const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
+      if (err) {
+        setError(`${err.message} (code: ${(err as any).code ?? 'none'}, status: ${(err as any).status ?? 'none'})`);
+        setLoading(false);
+      } else if (!data.session) {
+        setError('Sign-in succeeded but no session was returned. Check Supabase email confirmation settings.');
+        setLoading(false);
+      } else {
+        window.location.href = '/';
+      }
+    } catch (thrown: unknown) {
+      setError(`Unexpected error: ${String(thrown)}`);
       setLoading(false);
-    } else {
-      // Full reload so the middleware sees the fresh session cookies
-      window.location.href = '/';
     }
   }
 

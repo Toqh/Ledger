@@ -23,19 +23,21 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
-
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname === '/login' || pathname === '/signup';
-  const isAuthCallback = pathname.startsWith('/auth/');
+  const isPublic = isAuthPage || pathname.startsWith('/auth/') || pathname.startsWith('/api/debug');
 
-  if (!user && !isAuthPage && !isAuthCallback) {
+  // getClaims() validates JWT locally (no network round-trip to Supabase)
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const authenticated = !!claimsData?.claims;
+
+  if (!authenticated && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
-  if (user && isAuthPage) {
+  if (authenticated && isAuthPage) {
     const url = request.nextUrl.clone();
     url.pathname = '/';
     return NextResponse.redirect(url);
