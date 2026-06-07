@@ -2,15 +2,19 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 export default function LoginPage() {
-  const router = useRouter();
   const supabase = createClient();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(
+    searchParams.get('error') === 'auth_callback_failed'
+      ? 'Email confirmation failed. Please try again.'
+      : ''
+  );
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -22,8 +26,8 @@ export default function LoginPage() {
       setError(err.message);
       setLoading(false);
     } else {
-      router.push('/');
-      router.refresh();
+      // Full reload so the middleware sees the fresh session cookies
+      window.location.href = '/';
     }
   }
 

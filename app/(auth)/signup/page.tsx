@@ -2,11 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 export default function SignupPage() {
-  const router = useRouter();
   const supabase = createClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,13 +16,16 @@ export default function SignupPage() {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const { error: err } = await supabase.auth.signUp({ email, password });
+    const { data, error: err } = await supabase.auth.signUp({ email, password });
     if (err) {
       setError(err.message);
       setLoading(false);
+    } else if (data.session) {
+      // Auto-confirmed (email confirmation disabled in Supabase)
+      window.location.href = '/';
     } else {
+      // Email confirmation required — show a message instead of redirecting
       setDone(true);
-      setTimeout(() => { router.push('/'); router.refresh(); }, 1500);
     }
   }
 
@@ -38,11 +39,19 @@ export default function SignupPage() {
         boxShadow: '0 24px 60px rgba(0,0,0,0.5)',
         padding: '36px 32px', textAlign: 'center',
       }}>
-        <div style={{ fontSize: 32, marginBottom: 12 }}>✓</div>
-        <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: '#4caf7d', marginBottom: 8 }}>
-          Account created
+        <div style={{ fontSize: 32, marginBottom: 12 }}>✉</div>
+        <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: '#4caf7d', marginBottom: 12 }}>
+          Check your email
         </div>
-        <div style={{ fontSize: 13, color: '#777' }}>Redirecting to your Ledger…</div>
+        <div style={{ fontSize: 14, color: '#aaa', lineHeight: 1.6 }}>
+          We sent a confirmation link to <strong style={{ color: '#e8e2d4' }}>{email}</strong>.<br />
+          Click it to activate your account, then sign in.
+        </div>
+        <div style={{ marginTop: 24 }}>
+          <Link href="/login" style={{ color: '#c9a84c', fontSize: 13, textDecoration: 'none', fontWeight: 600 }}>
+            Back to sign in
+          </Link>
+        </div>
       </div>
     );
   }
