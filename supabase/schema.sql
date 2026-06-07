@@ -45,4 +45,4 @@ create policy "Users access own settings"
 
 -- Performance indexes
 create index if not exists entries_user_date on entries(user_id, date desc);
-create index if not exists entries_user_month on entries(user_id, date_trunc('month', date::timestamptz));
+create index if not exists entries_user_month on entries(user_id, date_trunc('month', date::timestamp));
