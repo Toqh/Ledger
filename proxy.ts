@@ -25,22 +25,19 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname === '/login' || pathname === '/signup';
-  const isPublic = isAuthPage || pathname.startsWith('/auth/') || pathname.startsWith('/api/debug');
+  const isPublic = isAuthPage || pathname === '/' || pathname.startsWith('/auth/');
 
-  // getClaims() validates JWT locally (no network round-trip to Supabase)
   const { data: claimsData } = await supabase.auth.getClaims();
   const authenticated = !!claimsData?.claims;
 
-  if (!authenticated && !isPublic) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+  // Send authenticated users away from the landing + auth pages to the dashboard
+  if (authenticated && (pathname === '/' || isAuthPage)) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  if (authenticated && isAuthPage) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/';
-    return NextResponse.redirect(url);
+  // Protect all app routes
+  if (!authenticated && !isPublic) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   return supabaseResponse;

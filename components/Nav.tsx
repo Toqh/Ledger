@@ -29,9 +29,9 @@ export default function Nav() {
   }
 
   const navItems = [
-    { label: 'Record',   icon: BookOpen,  href: '/'         },
-    { label: 'Report',   icon: BarChart2, href: '/report'   },
-    { label: 'Settings', icon: Settings,  href: '/settings' },
+    { label: 'Record',   icon: BookOpen,  href: '/dashboard' },
+    { label: 'Report',   icon: BarChart2, href: '/report'    },
+    { label: 'Settings', icon: Settings,  href: '/settings'  },
   ];
 
   return (
@@ -46,7 +46,7 @@ export default function Nav() {
       top: 0,
       zIndex: 50,
     }}>
-      <Link href="/" style={{ fontFamily: "'DM Serif Display', serif", fontSize: 17, color: T.navText, textDecoration: 'none' }}>
+      <Link href="/dashboard" style={{ fontFamily: "'DM Serif Display', serif", fontSize: 17, color: T.navText, textDecoration: 'none' }}>
         Ledger
       </Link>
 

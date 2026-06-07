@@ -10,9 +10,9 @@ export default function FAB({ pathname }: Props) {
   const { T, dark } = useApp();
 
   const config: Record<string, { icon: typeof BarChart2; label: string; href: string }> = {
-    '/':        { icon: BarChart2, label: 'Report', href: '/report'   },
-    '/report':  { icon: Plus,      label: 'Record', href: '/'         },
-    '/settings':{ icon: Plus,      label: 'Record', href: '/'         },
+    '/dashboard': { icon: BarChart2, label: 'Report', href: '/report'     },
+    '/report':    { icon: Plus,      label: 'Record', href: '/dashboard'  },
+    '/settings':  { icon: Plus,      label: 'Record', href: '/dashboard'  },
   };
 
   const fab = config[pathname];
